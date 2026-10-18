@@ -156,11 +156,12 @@
                 <a href="#" data-action="show-home" class="back-home" style="margin:0;">← العودة للرئيسية</a>
             </div>
 
+            <!-- تم إزالة الإيموجي من التابات هنا -->
             <div class="dashboard-tabs animate-fade delay-1">
-                <button type="button" data-tab="courses" data-action="switch-tab" class="active">📚 كورساتي</button>
-                <button type="button" data-tab="exams" data-action="switch-tab">📝 الاختبارات</button>
-                <button type="button" data-tab="grades" data-action="switch-tab">📊 درجاتي</button>
-                <button type="button" data-tab="platform" data-action="switch-tab">💻 المنصة</button>
+                <button type="button" data-tab="courses" data-action="switch-tab" class="active">كورساتي</button>
+                <button type="button" data-tab="exams" data-action="switch-tab">الاختبارات</button>
+                <button type="button" data-tab="grades" data-action="switch-tab">درجاتي</button>
+                <button type="button" data-tab="platform" data-action="switch-tab">المنصة</button>
             </div>
 
             <div id="tab-courses" class="student-tab-content active animate-fade delay-2">
@@ -237,37 +238,19 @@
         </div>
     </div>
 
+    <!-- ✅ تم تنظيف شاشة الـ Auth بالكامل (حذف الـ Sidebar) -->
     <div id="authSection" class="auth-page-section">
         <div class="auth-layout-container">
-            <div class="auth-sidebar">
-                <div class="islamic-ornament orn-1">✦</div>
-                <div class="islamic-ornament orn-2">❋</div>
-                <div class="islamic-ornament orn-3">✧</div>
-                <div class="islamic-ornament orn-4">۞</div>
-
-                <div class="auth-sidebar-top">
-                    <a href="#" data-action="show-home" class="btn-home-pill">🏠 الرئيسية</a>
-                    <button type="button" data-action="toggle-dark" class="btn-icon" style="border-color: rgba(255,255,255,0.3); color: #fff; width:38px;height:38px;">🌙</button>
-                </div>
-
-                <div class="auth-sidebar-brand">
-                    <div class="auth-brand-logo">🕌</div>
-                    <h2>نُورُ تَعْلِيمِ الأَزْهَرِ</h2>
-                    <p>منصة الطالب والأدمن</p>
-                    <div class="brand-divider"></div>
-                </div>
-
-                <ul class="auth-features-list">
-                    <li><div class="icon-box">📖</div><span>كورسات ومحاضرات</span></li>
-                    <li><div class="icon-box">🎓</div><span>متابعة التقدم</span></li>
-                    <li><div class="icon-box">🎧</div><span>دعم فني سريع</span></li>
-                </ul>
-
-                <div class="auth-sidebar-footer">محتوى تعليمي يليق بتميز طالب الأزهر</div>
-            </div>
-
             <div class="auth-main-content">
                 <div class="auth-card-modern">
+                    
+                    <!-- لوجو صغير أعلى الفورم -->
+                    <div class="auth-brand-header">
+                        <div class="auth-brand-logo">🕌</div>
+                        <h2>نُورُ تَعْلِيمِ الأَزْهَرِ</h2>
+                        <p>منصة الطالب</p>
+                    </div>
+
                     <div id="registerFormContainer">
                         <div class="auth-card-header"><h3>انضم لمنصتنا</h3><p>أنشئ حسابك كطالب</p><div class="gold-divider-line"></div></div>
                         <form id="registerForm" novalidate>
