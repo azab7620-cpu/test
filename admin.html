@@ -83,7 +83,7 @@
             <div class="nav-buttons">
                 <button type="button" class="btn-dark-mode" data-action="toggle-dark" title="تبديل الوضع الداكن" aria-label="تبديل الوضع الداكن">🌙</button>
                 <span id="adminNameDisplay" class="admin-name-display"></span>
-                <button type="button" class="btn-home" data-action="open-home">🏠 فتح الرئيسية</button>
+                <button type="button" class="btn-home" data-action="open-home">فتح الرئيسية</button>
                 <button type="button" class="btn-logout" data-action="logout">تسجيل خروج</button>
             </div>
         </div>
@@ -93,21 +93,21 @@
          📊 Main Dashboard
          ═══════════════════════════════════════════════════════ -->
     <div class="dashboard-container">
-        <h2 class="dashboard-title">⚙️ لوحة تحكم الأدمن</h2>
+        <h2 class="dashboard-title">لوحة تحكم الأدمن</h2>
 
-        <!-- ─── Admin Tabs ─── -->
+        <!-- ─── Admin Tabs (بدون إيموجي) ─── -->
         <div class="admin-tabs">
-            <button type="button" class="active" data-action="show-tab" data-tab="students">👥 الطلاب</button>
-            <button type="button" data-action="show-tab" data-tab="bundles">📦 الحزم والوحدات</button>
-            <button type="button" data-action="show-tab" data-tab="courses">📹 المحاضرات</button>
-            <button type="button" data-action="show-tab" data-tab="books">📚 الكتب</button>
-            <button type="button" data-action="show-tab" data-tab="teachers">👨‍🏫 المدرسون</button>
-            <button type="button" data-action="show-tab" data-tab="exams">📝 الاختبارات</button>
-            <button type="button" data-action="show-tab" data-tab="addCourse">➕ إضافة محاضرة</button>
-            <button type="button" data-action="show-tab" data-tab="addBook">➕ إضافة كتاب</button>
-            <button type="button" data-action="show-tab" data-tab="addTeacher">➕ إضافة مدرس</button>
-            <button type="button" data-action="show-tab" data-tab="addBundle">➕ إنشاء وحدة</button>
-            <button type="button" data-action="show-tab" data-tab="addExam">➕ إضافة اختبار</button>
+            <button type="button" class="active" data-action="show-tab" data-tab="students">الطلاب</button>
+            <button type="button" data-action="show-tab" data-tab="bundles">الحزم والوحدات</button>
+            <button type="button" data-action="show-tab" data-tab="courses">المحاضرات</button>
+            <button type="button" data-action="show-tab" data-tab="books">الكتب</button>
+            <button type="button" data-action="show-tab" data-tab="teachers">المدرسون</button>
+            <button type="button" data-action="show-tab" data-tab="exams">الاختبارات</button>
+            <button type="button" data-action="show-tab" data-tab="addCourse">إضافة محاضرة</button>
+            <button type="button" data-action="show-tab" data-tab="addBook">إضافة كتاب</button>
+            <button type="button" data-action="show-tab" data-tab="addTeacher">إضافة مدرس</button>
+            <button type="button" data-action="show-tab" data-tab="addBundle">إنشاء وحدة</button>
+            <button type="button" data-action="show-tab" data-tab="addExam">إضافة اختبار</button>
         </div>
 
         <!-- ═══════════════════════════════════════════════════
@@ -226,9 +226,9 @@
              📝 TAB: Exams
              ═══════════════════════════════════════════════════ -->
         <div id="tabExams" class="tab-content">
-            <h4 class="section-heading">📝 قائمة الاختبارات</h4>
+            <h4 class="section-heading">قائمة الاختبارات</h4>
             <div class="alert alert-info">
-                🤖 <strong>التصحيح تلقائي:</strong> بمجرد أن يسلّم الطالب الاختبار، يقوم النظام بتصحيحه خلال ثوانٍ تلقائياً.
+                <strong>التصحيح تلقائي:</strong> بمجرد أن يسلّم الطالب الاختبار، يقوم النظام بتصحيحه خلال ثوانٍ تلقائياً.
             </div>
             <div class="table-scroll">
                 <table class="admin-table">
@@ -252,7 +252,7 @@
              ═══════════════════════════════════════════════════ -->
         <div id="tabAddCourse" class="tab-content">
             <div class="add-form">
-                <h4 class="section-heading">📹 إضافة محاضرة جديدة</h4>
+                <h4 class="section-heading">إضافة محاضرة جديدة</h4>
                 <div class="alert alert-info">
                     💡 <strong>طريقة الرفع:</strong> ارفع الفيديو على <strong>Google Drive</strong> ← كليك يمين ← Share ← Change to anyone with link ← Copy link ← الصقه هنا.
                 </div>
@@ -288,7 +288,7 @@
              ═══════════════════════════════════════════════════ -->
         <div id="tabAddBook" class="tab-content">
             <div class="add-form">
-                <h4 class="section-heading">📚 إضافة كتاب أو ملزمة</h4>
+                <h4 class="section-heading">إضافة كتاب أو ملزمة</h4>
                 <div class="alert alert-info">
                     💡 <strong>طريقة الرفع:</strong> ارفع الـ PDF على <strong>Google Drive</strong> ← كليك يمين ← Share ← Change to anyone with link ← Copy link ← الصقه هنا.
                 </div>
@@ -324,7 +324,7 @@
              ═══════════════════════════════════════════════════ -->
         <div id="tabAddTeacher" class="tab-content">
             <div class="add-form">
-                <h4 class="section-heading">👨‍🏫 إضافة مدرس جديد</h4>
+                <h4 class="section-heading">إضافة مدرس جديد</h4>
                 <form id="addTeacherForm">
                     <div class="form-grid">
                         <div>
@@ -450,7 +450,7 @@
              ═══════════════════════════════════════════════════ -->
         <div id="tabAddExam" class="tab-content">
             <div class="add-form">
-                <h4 class="section-heading">📝 إضافة اختبار جديد</h4>
+                <h4 class="section-heading">إضافة اختبار جديد</h4>
                 <div class="alert alert-success">
                     💡 الاختبار لا يظهر في الصفحة الرئيسية، بل يظهر للطلاب "المفعلين" فقط.
                 </div>
@@ -502,7 +502,7 @@
     <div id="studentDetailsModal" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>👤 تفاصيل الطالب</h3>
+                <h3>تفاصيل الطالب</h3>
                 <button type="button" class="modal-close" data-action="close-student-modal">✕</button>
             </div>
             <div id="studentDetailsContent"></div>
