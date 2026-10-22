@@ -778,6 +778,21 @@ function toggleVideoFullscreen() {
     }
 }
 
+function toggleVideoOrientation() {
+    const wrapper = document.getElementById('videoIframeWrapper');
+    const icon = document.getElementById('orientationIcon');
+    
+    if (wrapper && icon) {
+        wrapper.classList.toggle('is-portrait');
+        
+        if (wrapper.classList.contains('is-portrait')) {
+            icon.textContent = '📱';
+        } else {
+            icon.textContent = '🖥️';
+        }
+    }
+}
+
 // --- الاختبارات ---
 async function startExam(examId) {
     if (!currentUser) return;
@@ -1097,6 +1112,7 @@ function handleActionClick(e) {
         case 'close-legal': e.preventDefault(); closeLegal(); break;
         case 'close-video': e.preventDefault(); closeVideoModal(); break;
         case 'toggle-video-fullscreen': e.preventDefault(); toggleVideoFullscreen(); break;
+        case 'toggle-orientation': e.preventDefault(); toggleVideoOrientation(); break;
         case 'logout': e.preventDefault(); logout(); break;
         case 'switch-tab': e.preventDefault(); switchStudentTab(el.dataset.tab, el); break;
         case 'open-bundle': e.preventDefault(); openBundle(el.dataset.bundleId); break;
