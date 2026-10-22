@@ -2095,23 +2095,23 @@ body.dark-mode .support-float-icon {
     .btn-register { padding: 6px 12px; font-size: 11px; }
     .btn-icon { width: 32px; height: 32px; font-size: 13px; }
 
-    /* ═══ Hero Section Fix (أهم جزء) ═══ */
+    /* ═══ Hero Section Fix (عشان ياخد طول الشاشة بالكامل) ═══ */
     .hero {
-        padding: 90px 15px 50px; /* تقليل المسافات */
+        min-height: 100vh; /* طول الشاشة بالكامل */
+        min-height: 100dvh; /* للهواتف الحديثة عشان شريط المتصفح */
+        width: 100%;
+        padding: 100px 15px 40px;
         background-attachment: scroll;
-        border-radius: 0 0 30px 30px;
-        min-height: auto; /* عشان ميبقاش فيه مساحة فاضية كبيرة */
+        border-radius: 0; /* شيلنا الاستدارة عشان ميبقاش فيه فراغ أبيض من تحت */
+        margin-bottom: 0; /* شيلنا المسافة عشان يلزق في اللي بعده */
+        display: flex;
+        align-items: center; /* توسيط المحتوى عمودياً */
     }
     .hero-content { justify-content: center; }
     .hero-text { 
         text-align: center; 
         max-width: 100%; 
         width: 100%;
-    }
-    .hero-label {
-        font-size: 12px;
-        padding: 5px 14px;
-        margin-bottom: 12px;
     }
     .hero-title { 
         font-size: 34px; /* تصغير الخط عشان مطلعش برا الشاشة */
