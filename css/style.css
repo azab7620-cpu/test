@@ -1,9 +1,8 @@
-/* 
- * Nour Al-Azhar Platform - Main Stylesheet
- * Author: Raheed
- */
+/* ==========================================================================
+   Nour Al-Azhar Platform - Main Stylesheet
+   ========================================================================== */
 
-/* --- Reset & Base --- */
+/* --- Reset & Variables --- */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -1018,194 +1017,114 @@ body.dark-mode .btn-item-action.exam {
     background: linear-gradient(135deg, var(--gold), var(--gold-dark));
 }
 
-/* --- Video Modal --- */
+/* --- Video Modal (Premium Theme) --- */
 .video-modal {
     display: none;
     position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.9);
+    inset: 0;
+    background: rgba(10, 5, 5, 0.95);
     z-index: 10000;
     justify-content: center;
     align-items: center;
     padding: 20px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 .video-modal-content {
-    background: linear-gradient(135deg, #3b0a0a 0%, #1a0404 100%);
-    padding: 0;
-    border-radius: 24px;
+    background: #000;
+    border-radius: 20px;
     width: 100%;
-    max-width: 900px;
+    max-width: 1100px;
     position: relative;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
     overflow: hidden;
-    border: 3px solid var(--gold);
-}
-
-body.dark-mode .video-modal-content {
-    background: linear-gradient(135deg, #232329, #1a1a1f);
-    border-color: var(--gold);
-}
-
-.video-modal-header {
-    background: linear-gradient(90deg, #3b0a0a 0%, #1a0404 100%);
-    padding: 15px 25px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(201, 169, 97, 0.15);
+    border: 2px solid rgba(201, 169, 97, 0.3);
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    transition: max-width 0.4s ease;
+}
+
+.video-controls-top {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    display: flex;
     justify-content: space-between;
-    border-bottom: 2px solid var(--gold);
+    z-index: 10;
+    pointer-events: none;
 }
 
-body.dark-mode .video-modal-header {
-    background: linear-gradient(90deg, #232329, #1a1a1f);
-    border-bottom-color: var(--gold);
+.vc-right-btns {
+    display: flex;
+    gap: 12px;
+    pointer-events: auto;
 }
 
-.video-modal-header .platform-brand { display: flex; align-items: center; gap: 12px; }
-.video-modal-header .platform-logo {
-    width: 40px; height: 40px;
-    background: radial-gradient(circle, #c9a961 0%, #8a6f1d 100%);
+.vc-btn {
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
+    background: rgba(59, 10, 10, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: var(--gold);
+    border: 1.5px solid rgba(201, 169, 97, 0.6);
+    font-size: 18px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 22px;
-    border: 2px solid #fff;
-    box-shadow: 0 3px 10px rgba(212,175,55,0.5);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    font-family: inherit;
+    pointer-events: auto;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
 }
 
-.video-modal-header .platform-info h4 { color: #c9a961; font-size: 17px; margin: 0 0 2px 0; }
-.video-modal-header .platform-info p { color: #ccc; font-size: 11px; margin: 0; font-family: 'Cairo', sans-serif; }
-body.dark-mode .video-modal-header .platform-info p { color: var(--text-muted); }
+.vc-btn:hover {
+    background: var(--gold);
+    color: #3b0a0a;
+    transform: scale(1.1) translateY(-2px);
+    border-color: #fff;
+    box-shadow: 0 6px 20px rgba(201, 169, 97, 0.5);
+}
 
-.video-modal-video-title {
-    background: #1a1a1a;
+.vc-close {
+    background: rgba(139, 0, 0, 0.8);
     color: #fff;
-    padding: 12px 25px;
-    font-size: 14px;
-    font-weight: 700;
-    text-align: center;
-    border-bottom: 1px solid rgba(212,175,55,0.3);
+    border-color: rgba(255, 100, 100, 0.6);
+    pointer-events: auto;
 }
 
-body.dark-mode .video-modal-video-title {
-    background: #141418;
-    color: var(--text-primary);
+.vc-close:hover {
+    background: #e00;
+    color: #fff;
+    border-color: #fff;
+    transform: scale(1.1) rotate(90deg);
 }
 
-.video-modal-iframe-wrapper {
+.video-iframe-wrapper {
     position: relative;
-    padding: 15px;
+    width: 100%;
+    aspect-ratio: 16 / 9;
     background: #000;
-    border-radius: 12px;
-    overflow: hidden;
+    transition: aspect-ratio 0.4s ease;
+}
+
+.video-iframe-wrapper.is-portrait {
+    aspect-ratio: 9 / 16;
+    max-height: 85vh;
 }
 
 #videoIframe {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    height: 55vh;
+    height: 100%;
     border: none;
-    border-radius: 12px;
     background: #000;
-    display: block;
-}
-
-.video-modal-iframe-wrapper.is-youtube::before {
-    content: '';
-    position: absolute;
-    top: 15px; right: 15px;
-    width: 60%; height: 130px;
-    background: linear-gradient(to left, #000 0%, #000 55%, transparent 100%);
-    z-index: 5;
-    pointer-events: none;
-    border-radius: 0 12px 0 0;
-}
-
-.video-modal-iframe-wrapper.is-youtube::after {
-    content: '';
-    position: absolute;
-    bottom: 15px; left: 15px;
-    width: 130px; height: 55px;
-    background: #000;
-    z-index: 5;
-    pointer-events: none;
-    border-radius: 0 0 0 12px;
-}
-
-.video-brand-watermark {
-    position: absolute;
-    bottom: 22px; right: 22px;
-    z-index: 6;
-    background: rgba(59, 10, 10, 0.8);
-    color: #c9a961;
-    padding: 5px 14px;
-    border-radius: 50px;
-    font-size: 12px;
-    font-weight: 700;
-    border: 1px solid rgba(212,175,55,0.6);
-    pointer-events: none;
-    font-family: 'Aref Ruqaa', serif;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.5);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    letter-spacing: 0.3px;
-    animation: fadeOutWatermark 1.5s ease 3s forwards;
-}
-
-.video-brand-watermark .wm-icon { font-size: 13px; }
-@keyframes fadeOutWatermark { to { opacity: 0; visibility: hidden; } }
-
-.close-video-modal {
-    position: absolute;
-    top: 18px; left: 22px;
-    background: rgba(170,0,0,0.95);
-    color: #fff;
-    border: 2px solid #fff;
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    font-weight: 900;
-    font-size: 16px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-    z-index: 10;
-    font-family: inherit;
-}
-
-.close-video-modal:hover {
-    transform: scale(1.1) rotate(90deg);
-    background: var(--gold);
-    color: #3b0a0a;
-}
-
-.fullscreen-video-modal {
-    position: absolute;
-    top: 18px;
-    right: 22px;
-    background: rgba(0, 0, 0, 0.6);
-    color: #fff;
-    border: 2px solid #fff;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    font-weight: 900;
-    font-size: 18px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    z-index: 10;
-}
-
-.fullscreen-video-modal:hover {
-    background: var(--gold);
-    color: #000;
 }
 
 /* --- Animations --- */
@@ -1496,7 +1415,7 @@ body.dark-mode #qNoteDisplay {
     border-color: rgba(201, 169, 97, 0.4);
 }
 
-/* --- Exam Result --- */
+/* --- Exam Result Details --- */
 .exam-result-light {
     background: #f8f6f2;
     color: #333;
@@ -2691,7 +2610,7 @@ body.dark-mode .confirm-btn-ok {
     .auth-page-section { padding: 20px 10px; }
     .auth-card-modern { padding: 25px 15px; }
 
-    /* Mobile Video Modal Adjustments */
+    /* Mobile Video Modal */
     .video-modal { padding: 0; background: #000; }
     .video-modal-content {
         width: 100vw;
@@ -2714,9 +2633,8 @@ body.dark-mode .confirm-btn-ok {
         background: #000;
     }
     #videoIframe { height: 100%; border-radius: 0; }
-    .video-modal-header, .video-modal-video-title { display: none !important; }
-    .close-video-modal { top: 15px; left: 15px; z-index: 9999; width: 40px; height: 40px; background: rgba(200, 0, 0, 0.8); }
-    .fullscreen-video-modal { top: 15px; right: 15px; z-index: 9999; width: 40px; height: 40px; background: rgba(0, 0, 0, 0.8); }
+    .video-controls-top { top: 10px; left: 10px; right: 10px; }
+    .vc-btn { width: 40px; height: 40px; font-size: 16px; }
 }
 
 @media (max-width: 480px) {
