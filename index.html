@@ -11,37 +11,16 @@
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%233b0a0a'/%3E%3Cpath d='M32 18c-5-3-12-3-17-1v27c5-2 12-2 17 1 5-3 12-3 17-1V17c-5-2-12-2-17 1z' fill='none' stroke='%23c9a961' stroke-width='3' stroke-linejoin='round'/%3E%3Cpath d='M32 18v27' stroke='%23c9a961' stroke-width='3'/%3E%3C/svg%3E">
     <title>نُورُ تَعْلِيمِ الأَزْهَرِ</title>
 
-    <!-- ✅ CSP محسّنة: بدون unsafe-inline في script-src + منع inline event handlers + whitelist للصور -->
+    <!-- Content Security Policy -->
     <meta http-equiv="Content-Security-Policy" content="
       default-src 'self';
-      script-src 'self'
-                 https://www.gstatic.com
-                 https://www.google.com
-                 https://www.google.com/recaptcha/
-                 https://www.gstatic.com/recaptcha/
-                 https://apis.google.com
-                 https://www.recaptcha.net;
+      script-src 'self' https://www.gstatic.com https://www.google.com https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/ https://apis.google.com https://www.recaptcha.net;
       script-src-attr 'none';
       style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/;
       font-src 'self' https://fonts.gstatic.com data:;
       img-src 'self' data: blob: https://images.unsplash.com https://*.googleusercontent.com https://*.gstatic.com https://*.googleapis.com https://firebasestorage.googleapis.com;
-      frame-src https://www.youtube.com
-                https://www.youtube-nocookie.com
-                https://drive.google.com
-                https://*.google.com
-                https://www.google.com/recaptcha/
-                https://www.recaptcha.net;
-      connect-src 'self'
-                  https://*.googleapis.com
-                  https://*.firebaseio.com
-                  wss://*.firebaseio.com
-                  https://*.firebaseapp.com
-                  https://content-firebaseappcheck.googleapis.com
-                  https://script.google.com
-                  https://script.googleusercontent.com
-                  https://www.google.com
-                  https://www.google.com/recaptcha/
-                  https://www.recaptcha.net;
+      frame-src https://www.youtube.com https://www.youtube-nocookie.com https://drive.google.com https://*.google.com https://www.google.com/recaptcha/ https://www.recaptcha.net;
+      connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com https://content-firebaseappcheck.googleapis.com https://script.google.com https://script.googleusercontent.com https://www.google.com https://www.google.com/recaptcha/ https://www.recaptcha.net;
       media-src 'self' blob:;
       object-src 'none';
       base-uri 'self';
@@ -51,12 +30,12 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Aref+Ruqaa:wght@400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
 
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-check-compat.js"></script>
 
-    <!-- ✅ ملف CSS خارجي -->
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -77,6 +56,7 @@
 
     <div id="toastHost" role="status" aria-live="polite"></div>
 
+    <!-- Header -->
     <header>
         <div class="nav-container">
             <div class="logo-area" id="logoArea" role="button" tabindex="0" aria-label="الرئيسية">
@@ -106,6 +86,7 @@
         </div>
     </header>
 
+    <!-- Home Section -->
     <div id="homeSection">
         <section class="hero">
             <div class="hero-content">
@@ -146,6 +127,7 @@
         </div>
     </div>
 
+    <!-- Student Dashboard -->
     <div id="studentDashboard" class="dashboard-section">
         <div class="student-dashboard-container">
             <div class="welcome-banner animate-fade">
@@ -156,7 +138,6 @@
                 <a href="#" data-action="show-home" class="back-home" style="margin:0;">← العودة للرئيسية</a>
             </div>
 
-            <!-- تم إزالة الإيموجي من التابات هنا -->
             <div class="dashboard-tabs animate-fade delay-1">
                 <button type="button" data-tab="courses" data-action="switch-tab" class="active">كورساتي</button>
                 <button type="button" data-tab="exams" data-action="switch-tab">الاختبارات</button>
@@ -193,6 +174,7 @@
         </div>
     </div>
 
+    <!-- Course Detail -->
     <div id="courseDetailView" class="course-detail-view">
         <button type="button" data-action="back-to-dashboard" class="back-btn">← العودة للكورسات</button>
 
@@ -214,6 +196,7 @@
         <div id="unitsContainer" class="animate-fade delay-2"></div>
     </div>
 
+    <!-- Exam Page -->
     <div id="examPage">
         <div class="exam-header">
             <h2 id="examTitleHeader">عنوان الاختبار</h2>
@@ -238,13 +221,12 @@
         </div>
     </div>
 
-    <!-- ✅ تم تنظيف شاشة الـ Auth بالكامل (حذف الـ Sidebar) -->
+    <!-- Auth Section -->
     <div id="authSection" class="auth-page-section">
         <div class="auth-layout-container">
             <div class="auth-main-content">
                 <div class="auth-card-modern">
                     
-                    <!-- لوجو صغير أعلى الفورم -->
                     <div class="auth-brand-header">
                         <div class="auth-brand-logo">🕌</div>
                         <h2>نُورُ تَعْلِيمِ الأَزْهَرِ</h2>
@@ -339,33 +321,21 @@
         </div>
     </div>
 
+    <!-- Video Modal (Updated for Mobile Fullscreen) -->
     <div id="videoModal" class="video-modal">
-        <div class="video-modal-content">
+        <div class="video-modal-content" id="videoModalContent">
+            
             <button type="button" class="close-video-modal" data-action="close-video" aria-label="إغلاق">✕</button>
+            <button type="button" class="fullscreen-video-modal" data-action="toggle-video-fullscreen" aria-label="ملء الشاشة">⛶</button>
 
-            <div class="video-modal-header">
-                <div class="platform-brand">
-                    <div class="platform-logo">🕌</div>
-                    <div class="platform-info">
-                        <h4>نُورُ تَعْلِيمِ الأَزْهَرِ</h4>
-                        <p>منصة تعليمية معتمدة</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="video-modal-video-title" id="videoModalTitle">عنوان الفيديو</div>
-
-            <div class="video-modal-iframe-wrapper" id="videoIframeWrapper">
+            <div class="video-iframe-wrapper" id="videoIframeWrapper">
                 <iframe id="videoIframe" src="" allow="autoplay; encrypted-media; fullscreen" allowfullscreen title="مشغل الفيديو"></iframe>
-
-                <div class="video-brand-watermark" id="videoWatermark">
-                    <span class="wm-icon">🕌</span>
-                    <span>نُورُ الأَزْهَرِ</span>
-                </div>
             </div>
+            
         </div>
     </div>
 
+    <!-- Footer -->
     <footer>
         <div class="footer-content">
             <div class="footer-col"><h4>روابط سريعة</h4><ul>
@@ -395,6 +365,7 @@
         </div>
     </footer>
 
+    <!-- Legal Modal -->
     <div id="legalModal" class="legal-modal">
         <div class="legal-box">
             <button type="button" class="legal-close" data-action="close-legal" aria-label="إغلاق">✕</button>
@@ -402,6 +373,7 @@
         </div>
     </div>
 
+    <!-- Support Button -->
     <a href="https://wa.me/201113224591" target="_blank" rel="noopener noreferrer" class="support-float-btn">
         <div class="support-text">
             <h5>الدعم الفني</h5>
@@ -410,7 +382,7 @@
         <div class="support-float-icon"><svg class="ico"><use href="#i-headset"/></svg></div>
     </a>
 
-    <!-- ✅ Confirm Modal — بديل native confirm() -->
+    <!-- Confirm Modal -->
     <div id="confirmModal" class="confirm-modal-overlay">
         <div class="confirm-modal-box">
             <div class="confirm-modal-icon" id="confirmIcon">⚠️</div>
@@ -423,7 +395,7 @@
         </div>
     </div>
 
-    <!-- ✅ كل الجافاسكربت في ملفات خارجية -->
+    <!-- Scripts -->
     <script src="js/security.js"></script>
     <script src="js/config.js"></script>
     <script src="js/app.js"></script>
