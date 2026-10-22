@@ -1,8 +1,6 @@
 'use strict';
 
-// ═══════════════════════════════════════════════════════════
-//  📋 نص قانوني
-// ═══════════════════════════════════════════════════════════
+// --- النصوص القانونية ---
 const LEGAL_TEXT = {
     privacy: `<h3>سياسة الخصوصية</h3>
         <p>نحترم خصوصية طلابنا وأولياء أمورهم، ونوضح هنا باختصار كيف نتعامل مع بياناتكم.</p>
@@ -17,9 +15,7 @@ const LEGAL_TEXT = {
         <ul><li>الحساب شخصي ولا يجوز مشاركته مع الآخرين.</li><li>المحتوى (فيديوهات وكتب واختبارات) مخصص للاستخدام الشخصي ولا يجوز نسخه أو إعادة نشره.</li><li>يمنع محاولة الغش أو العبث بالاختبارات أو بالمنصة.</li><li>يحق للإدارة إيقاف أي حساب يخالف هذه الشروط.</li><li>قد نقوم بتحديث المحتوى والشروط من وقت لآخر.</li></ul>`
 };
 
-// ═══════════════════════════════════════════════════════════
-//  State
-// ═══════════════════════════════════════════════════════════
+// --- المتغيرات العامة ---
 let currentUser = null;
 let currentExam = null;
 let currentBundle = null;
@@ -29,19 +25,17 @@ let examInProgress = false;
 let currentAttemptUnsub = null;
 let ignoreAuthChange = false;
 
-// ═══════════════════════════════════════════════════════════
-//  نسيت كلمة المرور + Legal
-// ═══════════════════════════════════════════════════════════
+// --- إدارة كلمة المرور والنوافذ القانونية ---
 async function resetPassword() {
     const email = document.getElementById('loginEmailOrPhone').value.trim();
     if (!email) { showToast('اكتب بريدك الإلكتروني أولاً ثم اضغط "نسيت كلمة المرور".', 'warn'); return; }
     try {
         await auth.sendPasswordResetEmail(email);
-        showToast('✅ لو البريد مسجل عندنا، هيوصلك رابط لإعادة تعيين كلمة المرور.');
+        showToast('لو البريد مسجل عندنا، هيوصلك رابط لإعادة تعيين كلمة المرور.');
     } catch (err) {
-        if (err.code === 'auth/invalid-email') showToast('❌ البريد الإلكتروني غير صحيح.');
+        if (err.code === 'auth/invalid-email') showToast('البريد الإلكتروني غير صحيح.');
         else if (err.code === 'auth/too-many-requests') showToast('محاولات كثيرة، حاول لاحقاً.', 'warn');
-        else showToast('✅ لو البريد مسجل عندنا، هيوصلك رابط لإعادة تعيين كلمة المرور.');
+        else showToast('لو البريد مسجل عندنا، هيوصلك رابط لإعادة تعيين كلمة المرور.');
     }
 }
 
@@ -49,18 +43,18 @@ function openLegal(kind) {
     document.getElementById('legalContent').innerHTML = LEGAL_TEXT[kind] || '';
     document.getElementById('legalModal').style.display = 'flex';
 }
+
 function closeLegal() {
     document.getElementById('legalModal').style.display = 'none';
 }
 
-// ═══════════════════════════════════════════════════════════
-//  Dark Mode
-// ═══════════════════════════════════════════════════════════
+// --- الوضع الداكن ---
 function toggleDarkMode() {
     document.body.classList.toggle('dark-mode');
     localStorage.setItem('darkMode', document.body.classList.contains('dark-mode') ? 'true' : 'false');
     updateDarkModeButtons();
 }
+
 function updateDarkModeButtons() {
     const isDark = document.body.classList.contains('dark-mode');
     document.querySelectorAll('.btn-icon').forEach(btn => {
@@ -68,26 +62,28 @@ function updateDarkModeButtons() {
         btn.textContent = isDark ? '☀️' : '🌙';
     });
 }
+
 function loadDarkModePreference() {
     if (localStorage.getItem('darkMode') === 'true') document.body.classList.add('dark-mode');
     updateDarkModeButtons();
 }
 
-// ═══════════════════════════════════════════════════════════
-//  Navigation
-// ═══════════════════════════════════════════════════════════
+// --- التنقل بين الصفحات ---
 function setActiveNav(el) {
     document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
     if (el) el.classList.add('active');
 }
+
 function showNavLinks() {
     const navLinks = document.getElementById('navLinks');
     if (navLinks) navLinks.style.display = 'flex';
 }
+
 function hideNavLinks() {
     const navLinks = document.getElementById('navLinks');
     if (navLinks) navLinks.style.display = 'none';
 }
+
 function scrollToSection(sectionId) {
     if (document.getElementById('homeSection').style.display === 'none') showHome();
     setTimeout(() => {
@@ -138,9 +134,7 @@ function toggleCenterField() {
     document.getElementById('regCenterContainer').style.display = isOutside ? 'none' : 'block';
 }
 
-// ═══════════════════════════════════════════════════════════
-//  Render Teachers / Courses / Books
-// ═══════════════════════════════════════════════════════════
+// --- عرض المدرسين والكورسات والكتب ---
 async function getTeachersPublic() {
     const snap = await db.collection('teachers').get();
     return snap.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -262,10 +256,7 @@ async function renderBooks() {
     }
 }
 
-// ═══════════════════════════════════════════════════════════
-//  Student Dashboard
-// ═══════════════════════════════════════════════════════════
-
+// --- لوحة تحكم الطالب ---
 function calculateBundleProgress(bundle, user) {
     if (!bundle.items || bundle.items.length === 0) return 0;
     const totalItems = bundle.items.length;
@@ -424,9 +415,6 @@ async function loadStudentGrades(userId) {
     }
 }
 
-// ═══════════════════════════════════════════════════════════
-//  عرض نتيجة المحاولة
-// ═══════════════════════════════════════════════════════════
 async function showAttemptResult(attemptId) {
     const resultDiv = document.getElementById('attempt-result-' + attemptId);
     if (!resultDiv) return;
@@ -552,7 +540,6 @@ async function loadStudentDashboard(user) {
     document.getElementById('studentNameDash').textContent = user.name || '';
     document.getElementById('studentGradeDash').textContent = user.grade || '';
 
-    // ─── جلب البيانات بالتوازي ───
     const stats = await fetchStudentAttempts(user.id);
     currentUser.attempts = stats;
 
@@ -576,9 +563,6 @@ async function loadStudentDashboard(user) {
         console.error('خطأ في تحميل exams/bundles:', e);
     }
 
-    // ═══════════════════════════════════════════════════════
-    //  📚 كورساتي: الحزم فقط
-    // ═══════════════════════════════════════════════════════
     const coursesGrid = document.getElementById('studentCoursesGrid');
     const allCards = [];
 
@@ -602,7 +586,6 @@ async function loadStudentDashboard(user) {
         ? allCards.join('')
         : '<p style="color:#888; text-align:center; grid-column:1/-1;">لا توجد كورسات متاحة لصفك حالياً.</p>';
 
-    // ─── الاختبارات ───
     const studentExamsList = document.getElementById('studentExamsList');
     if (exams.length) {
         studentExamsList.innerHTML = exams.map(ex => {
@@ -625,7 +608,6 @@ async function loadStudentDashboard(user) {
         studentExamsList.innerHTML = '<p style="color:#888;">لا توجد اختبارات لصفك بعد.</p>';
     }
 
-    // ─── المدرسون ───
     const teachers = await getTeachersPublic();
     document.getElementById('studentTeachersGrid').innerHTML = teachers.length
         ? teachers.map(t => `
@@ -638,9 +620,7 @@ async function loadStudentDashboard(user) {
         : '<p style="color:#888; text-align:center; grid-column:1/-1;">لا يوجد مدرسون بعد.</p>';
 }
 
-// ═══════════════════════════════════════════════════════════
-//  Bundle
-// ═══════════════════════════════════════════════════════════
+// --- الحزم والوحدات ---
 async function openBundle(bundleId) {
     const bundleSnap = await db.collection('bundles').doc(bundleId).get();
     if (!bundleSnap.exists) return;
@@ -725,9 +705,7 @@ function backToDashboard() {
     window.scrollTo(0, 0);
 }
 
-// ═══════════════════════════════════════════════════════════
-//  Video Modal
-// ═══════════════════════════════════════════════════════════
+// --- مشغل الفيديو ---
 function getEmbedUrl(url) {
     if (!url) return { embed: '', type: '' };
     const u = String(url).trim();
@@ -763,33 +741,44 @@ function openVideoModal(link, title) {
     const result = getEmbedUrl(link);
     if (!result.embed) { alert('رابط الفيديو غير صالح.'); return; }
 
-    document.getElementById('videoModalTitle').textContent = '📺 ' + title;
-    document.getElementById('videoIframe').src = result.embed;
+    const iframe = document.getElementById('videoIframe');
+    iframe.src = result.embed;
 
     const wrapper = document.getElementById('videoIframeWrapper');
     wrapper.classList.remove('is-youtube');
     if (result.type === 'youtube') wrapper.classList.add('is-youtube');
 
-    const wm = document.getElementById('videoWatermark');
-    if (wm) {
-        wm.style.animation = 'none';
-        wm.style.opacity = '1';
-        wm.style.visibility = 'visible';
-        void wm.offsetWidth;
-        wm.style.animation = 'fadeOutWatermark 1.5s ease 3s forwards';
-    }
-
     document.getElementById('videoModal').style.display = 'flex';
 }
 
 function closeVideoModal() {
+    if (document.fullscreenElement) {
+        document.exitFullscreen().catch(() => {});
+    }
     document.getElementById('videoIframe').src = '';
     document.getElementById('videoModal').style.display = 'none';
 }
 
-// ═══════════════════════════════════════════════════════════
-//  🔒 Exam
-// ═══════════════════════════════════════════════════════════
+function toggleVideoFullscreen() {
+    const modalContent = document.getElementById('videoModalContent');
+    if (!modalContent) return;
+
+    if (!document.fullscreenElement) {
+        if (modalContent.requestFullscreen) {
+            modalContent.requestFullscreen();
+        } else if (modalContent.webkitRequestFullscreen) {
+            modalContent.webkitRequestFullscreen();
+        } else if (modalContent.msRequestFullscreen) {
+            modalContent.msRequestFullscreen();
+        }
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+    }
+}
+
+// --- الاختبارات ---
 async function startExam(examId) {
     if (!currentUser) return;
     if (examInProgress) return;
@@ -804,7 +793,7 @@ async function startExam(examId) {
         const ex = { id: examSnap.id, ...examSnap.data() };
 
         if (ex.oneTimeOnly && completed.includes(examId)) {
-            alert('🔒 لقد قمت بتسليم هذا الاختبار مسبقاً، لا يمكن إعادته.');
+            alert('لقد قمت بتسليم هذا الاختبار مسبقاً، لا يمكن إعادته.');
             examInProgress = false;
             return;
         }
@@ -822,7 +811,7 @@ async function startExam(examId) {
         document.getElementById('examPage').classList.add('active');
         hideNavLinks();
 
-        document.getElementById('examTitleHeader').textContent = currentExam.title + (currentExam.oneTimeOnly ? ' 🔒' : '');
+        document.getElementById('examTitleHeader').textContent = currentExam.title + (currentExam.oneTimeOnly ? ' (مرة واحدة)' : '');
         renderQuestion();
         window.scrollTo(0, 0);
     } catch (err) {
@@ -864,7 +853,7 @@ function renderQuestion() {
     if (nextBtn) {
         if (currentQIndex === currentExam.questions.length - 1) {
             const answeredCount = answers.filter(a => a !== null).length;
-            nextBtn.textContent = `✅ تسليم الاختبار (${answeredCount}/${currentExam.questions.length})`;
+            nextBtn.textContent = `تسليم الاختبار (${answeredCount}/${currentExam.questions.length})`;
             nextBtn.style.background = '#8a6f1d';
             nextBtn.style.color = '#fff';
         } else {
@@ -890,11 +879,10 @@ async function handleNextOrFinish() {
         const answeredCount = answers.filter(a => a !== null).length;
         let proceed = false;
 
-        // ✅ showConfirm بدل confirm
         if (answeredCount < currentExam.questions.length) {
             const remaining = currentExam.questions.length - answeredCount;
             proceed = await showConfirm(
-                `⚠️ لم تجب على ${remaining} سؤال.\n\nهل تريد تسليم الاختبار الآن؟`,
+                `لم تجب على ${remaining} سؤال.\n\nهل تريد تسليم الاختبار الآن؟`,
                 {
                     title: 'تنبيه',
                     icon: '⚠️',
@@ -943,9 +931,9 @@ async function finishExam() {
                 mode: 'no-cors',
                 headers: { 'Content-Type': 'text/plain' },
                 body: JSON.stringify({ attemptId: attemptRef.id })
-            }).catch(err => console.warn('⚠️ فشل الإشعار الفوري:', err));
+            }).catch(err => console.warn('فشل الإشعار الفوري:', err));
         } catch (notifyErr) {
-            console.warn('⚠️ خطأ في إرسال الإشعار:', notifyErr);
+            console.warn('خطأ في إرسال الإشعار:', notifyErr);
         }
 
         document.getElementById('questionNav').style.display = 'none';
@@ -961,7 +949,7 @@ async function finishExam() {
         const exitBtn = document.getElementById('exitExamBtn');
         if (exitBtn) exitBtn.style.display = 'none';
 
-        document.getElementById('resultTitle').textContent = '⏳ جاري التصحيح';
+        document.getElementById('resultTitle').textContent = 'جاري التصحيح';
         document.getElementById('resultDetails').innerHTML = `
             <div style="text-align:center; padding:20px 0;">
                 <div id="countdownNumber" style="font-size:80px; font-weight:900; color:#b8935a; line-height:1; animation: pulseCountdown 1s ease infinite;">3</div>
@@ -980,14 +968,14 @@ async function finishExam() {
             const scorePct = Number(data.score) || 0;
 
             document.getElementById('resultTitle').textContent =
-                scorePct >= 50 ? '🎉 مبروك، نجحت!' : '😔 حاول مرة أخرى';
+                scorePct >= 50 ? 'مبروك، نجحت!' : 'حاول مرة أخرى';
 
             document.getElementById('resultDetails').innerHTML = `
                 <p>الإجابات الصحيحة: <strong style="color:#2a7a2a;">${data.correctCount || 0}</strong></p>
                 <p>الإجابات الخاطئة: <strong style="color:#a00;">${data.wrongCount || 0}</strong></p>
                 <p>بدون إجابة: <strong style="color:#888;">${data.unanswered || 0}</strong></p>
                 <p>نسبة النجاح: <strong style="color:#b8935a; font-size:22px;">${scorePct}%</strong></p>
-                ${currentExam.oneTimeOnly ? '<p style="margin-top:10px; color:#8b0000; font-weight:800;">🔒 هذا الاختبار لمرة واحدة.</p>' : ''}
+                ${currentExam.oneTimeOnly ? '<p style="margin-top:10px; color:#8b0000; font-weight:800;">هذا الاختبار لمرة واحدة.</p>' : ''}
             `;
             document.getElementById('reviewAnswers').innerHTML = '';
             if (exitBtn) exitBtn.style.display = 'inline-block';
@@ -1028,7 +1016,6 @@ async function finishExam() {
                 if (countdownDone) showResult(data);
                 if (currentAttemptUnsub) { try { currentAttemptUnsub(); } catch(e) {} currentAttemptUnsub = null; }
 
-                // ✅✨ نسجل إن الاختبار خلص — للاختبارات "مرة واحدة" بس
                 if (currentExam && currentExam.oneTimeOnly && currentUser) {
                     db.collection('users').doc(currentUser.id)
                       .collection('completedExams').doc(currentExam.id)
@@ -1042,13 +1029,13 @@ async function finishExam() {
                               currentUser.completedExams.push(currentExam.id);
                           }
                       })
-                      .catch(err => console.warn('⚠️ تعذر تسجيل الاختبار المكتمل:', err));
+                      .catch(err => console.warn('تعذر تسجيل الاختبار المكتمل:', err));
                 }
             }
         });
     } catch (err) {
         console.error('خطأ في التسليم:', err);
-        alert('⚠️ حدث خطأ في التسليم، حاول مرة أخرى.');
+        alert('حدث خطأ في التسليم، حاول مرة أخرى.');
         examInProgress = false;
     }
 }
@@ -1071,9 +1058,7 @@ function exitExam() {
     window.scrollTo(0, 0);
 }
 
-// ═══════════════════════════════════════════════════════════
-//  Logout
-// ═══════════════════════════════════════════════════════════
+// --- تسجيل الخروج ---
 async function logout() {
     if (currentAttemptUnsub) { try { currentAttemptUnsub(); } catch(e) {} currentAttemptUnsub = null; }
     try { await auth.signOut(); } catch(e) { console.error(e); }
@@ -1089,9 +1074,7 @@ async function logout() {
     window.scrollTo(0, 0);
 }
 
-// ═══════════════════════════════════════════════════════════
-//  🎯 Event Delegation
-// ═══════════════════════════════════════════════════════════
+// --- معالجة الأحداث (Event Delegation) ---
 function handleActionClick(e) {
     const el = e.target.closest('[data-action]');
     if (!el) return;
@@ -1113,6 +1096,7 @@ function handleActionClick(e) {
         case 'open-legal': e.preventDefault(); openLegal(el.dataset.kind); break;
         case 'close-legal': e.preventDefault(); closeLegal(); break;
         case 'close-video': e.preventDefault(); closeVideoModal(); break;
+        case 'toggle-video-fullscreen': e.preventDefault(); toggleVideoFullscreen(); break;
         case 'logout': e.preventDefault(); logout(); break;
         case 'switch-tab': e.preventDefault(); switchStudentTab(el.dataset.tab, el); break;
         case 'open-bundle': e.preventDefault(); openBundle(el.dataset.bundleId); break;
@@ -1147,9 +1131,7 @@ function handleActionClick(e) {
     }
 }
 
-// ═══════════════════════════════════════════════════════════
-//  🎯 Static Listeners
-// ═══════════════════════════════════════════════════════════
+// --- إعدادات الأحداث الثابتة ---
 function attachStaticListeners() {
     const logoArea = document.getElementById('logoArea');
     if (logoArea) {
@@ -1206,9 +1188,7 @@ function attachStaticListeners() {
     }
 }
 
-// ═══════════════════════════════════════════════════════════
-//  Register Handler
-// ═══════════════════════════════════════════════════════════
+// --- معالجة إنشاء الحساب ---
 async function handleRegisterSubmit(e) {
     e.preventDefault();
     const btn = document.getElementById('regSubmitBtn');
@@ -1224,27 +1204,23 @@ async function handleRegisterSubmit(e) {
     const password    = document.getElementById('regPass').value;
     const confirm     = document.getElementById('regConfirmPass').value;
 
-    // ═══════════════════════════════════════════════════════
-    //  ✅ التحققات (Validation)
-    // ═══════════════════════════════════════════════════════
     if (password !== confirm) { alert('كلمتا المرور غير متطابقتين.'); return; }
     if (!name || !email || !phone || !grade || !password) { alert('املأ جميع الحقول المطلوبة.'); return; }
     if (password.length < 8) { alert('كلمة المرور يجب أن تكون 8 أحرف على الأقل.'); return; }
-    if (name.length < 2 || name.length > 100) { alert('⚠️ الاسم يجب أن يكون بين حرفين و100 حرف.'); return; }
-    if (!isValidEgyptPhone(phone)) { alert('⚠️ رقم الهاتف يجب أن يكون 11 رقم ويبدأ بـ 01.'); return; }
-    if (parentPhone && !isValidEgyptPhone(parentPhone)) { alert('⚠️ رقم ولي الأمر يجب أن يكون 11 رقم ويبدأ بـ 01.'); return; }
-    if (!governorate) { alert('⚠️ اختر المحافظة.'); return; }
-    if (!stage) { alert('⚠️ اختر المرحلة.'); return; }
+    if (name.length < 2 || name.length > 100) { alert('الاسم يجب أن يكون بين حرفين و100 حرف.'); return; }
+    if (!isValidEgyptPhone(phone)) { alert('رقم الهاتف يجب أن يكون 11 رقم ويبدأ بـ 01.'); return; }
+    if (parentPhone && !isValidEgyptPhone(parentPhone)) { alert('رقم ولي الأمر يجب أن يكون 11 رقم ويبدأ بـ 01.'); return; }
+    if (!governorate) { alert('اختر المحافظة.'); return; }
+    if (!stage) { alert('اختر المرحلة.'); return; }
 
-    // ✅ المركز إجباري لو مش صفارة
     if (!isOutside && !center) {
-        alert('⚠️ اكتب اسم المركز، أو فعّل خيار "أدرس خارج مصر (صفارة)".');
+        alert('اكتب اسم المركز، أو فعّل خيار "أدرس خارج مصر (صفارة)".');
         const centerInput = document.getElementById('regCenter');
         if (centerInput) centerInput.focus();
         return;
     }
     if (center && center.length > 100) {
-        alert('⚠️ اسم المركز يجب أن يكون أقل من 100 حرف.');
+        alert('اسم المركز يجب أن يكون أقل من 100 حرف.');
         return;
     }
 
@@ -1270,32 +1246,31 @@ async function handleRegisterSubmit(e) {
         });
         dataSaved = true;
 
-        alert('✅ تم إنشاء الحساب بنجاح!\n\n📌 يرجى انتظار تفعيل حسابك من الإدارة.\n\n⏳ بعد التفعيل، هتقدر تسجل دخولك عادي.');
+        alert('تم إنشاء الحساب بنجاح!\n\nيرجى انتظار تفعيل حسابك من الإدارة.\n\nبعد التفعيل، هتقدر تسجل دخولك عادي.');
         switchAuthView('login');
         document.getElementById('registerForm').reset();
     } catch (err) {
-        console.error('❌ Registration error:', err.code, err.message);
+        console.error('Registration error:', err.code, err.message);
 
         if (err.code === 'auth/email-already-in-use')        alert('البريد الإلكتروني مستخدم بالفعل.');
         else if (err.code === 'auth/invalid-email')          alert('البريد الإلكتروني غير صحيح.');
         else if (err.code === 'auth/weak-password')          alert('كلمة المرور ضعيفة جداً.');
         else if (err.code === 'auth/too-many-requests')      alert('محاولات كثيرة، حاول لاحقاً.');
         else if (err.code === 'auth/network-request-failed') alert('تعذّر الاتصال، تحقق من الإنترنت.');
-        else if (err.code === 'auth/operation-not-allowed')  alert('❌ تسجيل Email/Password غير مفعّل في Firebase.');
+        else if (err.code === 'auth/operation-not-allowed')  alert('تسجيل Email/Password غير مفعّل في Firebase.');
         else if (err.code === 'permission-denied' || (err.message && err.message.toLowerCase().includes('permission')))
-            alert('❌ صلاحيات Firestore تمنع الحفظ.');
+            alert('صلاحيات Firestore تمنع الحفظ.');
         else                                                  alert('حدث خطأ: ' + (err.code || err.message || 'غير معروف'));
 
         if (accountCreated && !dataSaved) {
-            alert('⚠️ تم إنشاء الحساب لكن لم يتم حفظ بياناتك في قاعدة البيانات.\nيرجى التواصل مع الإدارة.');
+            alert('تم إنشاء الحساب لكن لم يتم حفظ بياناتك في قاعدة البيانات.\nيرجى التواصل مع الإدارة.');
         }
     } finally {
-        // ✅ signOut في finally عشان المستخدم مايفضلش مسجل دخول
         if (accountCreated) {
             try {
                 await auth.signOut();
             } catch (signOutErr) {
-                console.warn('⚠️ signOut failed:', signOutErr);
+                console.warn('signOut failed:', signOutErr);
             }
         }
         ignoreAuthChange = false;
@@ -1304,9 +1279,7 @@ async function handleRegisterSubmit(e) {
     }
 }
 
-// ═══════════════════════════════════════════════════════════
-//  Login Handler
-// ═══════════════════════════════════════════════════════════
+// --- معالجة تسجيل الدخول ---
 async function handleLoginSubmit(e) {
     e.preventDefault();
     const btn = document.getElementById('loginSubmitBtn');
@@ -1317,10 +1290,9 @@ async function handleLoginSubmit(e) {
 
     try {
         await auth.signInWithEmailAndPassword(email, password);
-        // ✅ تم تسجيل الدخول — الـ Auth Observer هيكمل باقي الفحوصات
     } catch (err) {
         if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
-            alert('❌ البريد الإلكتروني أو كلمة المرور غير صحيحة.');
+            alert('البريد الإلكتروني أو كلمة المرور غير صحيحة.');
         } else if (err.code === 'auth/invalid-email') {
             alert('البريد الإلكتروني غير صحيح.');
         } else if (err.code === 'auth/too-many-requests') {
@@ -1336,9 +1308,7 @@ async function handleLoginSubmit(e) {
     }
 }
 
-// ═══════════════════════════════════════════════════════════
-//  Auth State Observer
-// ═══════════════════════════════════════════════════════════
+// --- مراقبة حالة تسجيل الدخول ---
 function setupAuthObserver() {
     auth.onAuthStateChanged(async (fbUser) => {
         if (ignoreAuthChange) return;
@@ -1346,13 +1316,13 @@ function setupAuthObserver() {
         try {
             const doc = await db.collection('users').doc(fbUser.uid).get();
             if (!doc.exists) {
-                alert('⚠️ لا يوجد ملف مستخدم مرتبط بهذا الحساب. تواصل مع الإدارة.');
+                alert('لا يوجد ملف مستخدم مرتبط بهذا الحساب. تواصل مع الإدارة.');
                 await auth.signOut();
                 return;
             }
             const user = { id: doc.id, ...doc.data() };
             if (!user.active) {
-                alert('⏳ حسابك غير مفعّل. تواصل مع الإدارة للتفعيل.');
+                alert('حسابك غير مفعّل. تواصل مع الإدارة للتفعيل.');
                 await auth.signOut();
                 return;
             }
@@ -1379,9 +1349,7 @@ function setupAuthObserver() {
     });
 }
 
-// ═══════════════════════════════════════════════════════════
-//  🚀 Init
-// ═══════════════════════════════════════════════════════════
+// --- التهيئة الأولية ---
 document.addEventListener('DOMContentLoaded', function() {
     loadDarkModePreference();
     renderTeachers();
