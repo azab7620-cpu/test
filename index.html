@@ -30,7 +30,6 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Aref+Ruqaa:wght@400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
 
-    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -56,7 +55,6 @@
 
     <div id="toastHost" role="status" aria-live="polite"></div>
 
-    <!-- Header -->
     <header>
         <div class="nav-container">
             <div class="logo-area" id="logoArea" role="button" tabindex="0" aria-label="الرئيسية">
@@ -86,7 +84,6 @@
         </div>
     </header>
 
-    <!-- Home Section -->
     <div id="homeSection">
         <section class="hero">
             <div class="hero-content">
@@ -127,7 +124,6 @@
         </div>
     </div>
 
-    <!-- Student Dashboard -->
     <div id="studentDashboard" class="dashboard-section">
         <div class="student-dashboard-container">
             <div class="welcome-banner animate-fade">
@@ -174,7 +170,6 @@
         </div>
     </div>
 
-    <!-- Course Detail -->
     <div id="courseDetailView" class="course-detail-view">
         <button type="button" data-action="back-to-dashboard" class="back-btn">← العودة للكورسات</button>
 
@@ -196,7 +191,6 @@
         <div id="unitsContainer" class="animate-fade delay-2"></div>
     </div>
 
-    <!-- Exam Page -->
     <div id="examPage">
         <div class="exam-header">
             <h2 id="examTitleHeader">عنوان الاختبار</h2>
@@ -221,7 +215,6 @@
         </div>
     </div>
 
-    <!-- Auth Section -->
     <div id="authSection" class="auth-page-section">
         <div class="auth-layout-container">
             <div class="auth-main-content">
@@ -321,12 +314,23 @@
         </div>
     </div>
 
-    <!-- Video Modal (Updated for Mobile Fullscreen) -->
     <div id="videoModal" class="video-modal">
         <div class="video-modal-content" id="videoModalContent">
             
-            <button type="button" class="close-video-modal" data-action="close-video" aria-label="إغلاق">✕</button>
-            <button type="button" class="fullscreen-video-modal" data-action="toggle-video-fullscreen" aria-label="ملء الشاشة">⛶</button>
+            <div class="video-controls-top">
+                <button type="button" class="vc-btn vc-close" data-action="close-video" aria-label="إغلاق">
+                    <span style="font-size: 20px; font-weight: bold;">✕</span>
+                </button>
+                
+                <div class="vc-right-btns">
+                    <button type="button" class="vc-btn" data-action="toggle-orientation" id="btnOrientation" title="تغيير اتجاه الفيديو">
+                        <span id="orientationIcon">🖥️</span>
+                    </button>
+                    <button type="button" class="vc-btn" data-action="toggle-video-fullscreen" title="ملء الشاشة">
+                        <span>⛶</span>
+                    </button>
+                </div>
+            </div>
 
             <div class="video-iframe-wrapper" id="videoIframeWrapper">
                 <iframe id="videoIframe" src="" allow="autoplay; encrypted-media; fullscreen" allowfullscreen title="مشغل الفيديو"></iframe>
@@ -335,7 +339,6 @@
         </div>
     </div>
 
-    <!-- Footer -->
     <footer>
         <div class="footer-content">
             <div class="footer-col"><h4>روابط سريعة</h4><ul>
@@ -365,7 +368,6 @@
         </div>
     </footer>
 
-    <!-- Legal Modal -->
     <div id="legalModal" class="legal-modal">
         <div class="legal-box">
             <button type="button" class="legal-close" data-action="close-legal" aria-label="إغلاق">✕</button>
@@ -373,7 +375,6 @@
         </div>
     </div>
 
-    <!-- Support Button -->
     <a href="https://wa.me/201113224591" target="_blank" rel="noopener noreferrer" class="support-float-btn">
         <div class="support-text">
             <h5>الدعم الفني</h5>
@@ -382,7 +383,6 @@
         <div class="support-float-icon"><svg class="ico"><use href="#i-headset"/></svg></div>
     </a>
 
-    <!-- Confirm Modal -->
     <div id="confirmModal" class="confirm-modal-overlay">
         <div class="confirm-modal-box">
             <div class="confirm-modal-icon" id="confirmIcon">⚠️</div>
@@ -395,7 +395,6 @@
         </div>
     </div>
 
-    <!-- Scripts -->
     <script src="js/security.js"></script>
     <script src="js/config.js"></script>
     <script src="js/app.js"></script>
