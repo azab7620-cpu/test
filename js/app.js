@@ -180,6 +180,20 @@ async function renderTeachers() {
     }
 }
 
+function buildCourseCardHTML(c, i) {
+    const canEmbed = !!getEmbedUrl(c.link).embed;
+    const action = canEmbed
+        ? `<button type="button" class="btn-card" data-action="open-video" data-link="${attr(c.link || '')}" data-title="${attr(c.title || '')}">مشاهدة</button>`
+        : `<a href="${esc(safeUrl(c.link))}" target="_blank" rel="noopener noreferrer" class="btn-card">مشاهدة</a>`;
+    return `
+        <div class="card animate-scale" style="animation-delay:${i*0.1}s;">
+            <h4>${esc(c.title)}</h4>
+            <p><strong>الصف:</strong> ${esc(c.grade)}</p>
+            ${action}
+        </div>
+    `;
+}
+
 async function renderCourses() {
     const grid = document.getElementById('coursesGrid');
     if (!grid) return;
@@ -189,13 +203,7 @@ async function renderCourses() {
         try {
             const homeCourses = JSON.parse(cached);
             if (homeCourses.length) {
-                grid.innerHTML = homeCourses.map((c, i) => `
-                    <div class="card animate-scale" style="animation-delay:${i*0.1}s;">
-                        <h4>${esc(c.title)}</h4>
-                        <p><strong>الصف:</strong> ${esc(c.grade)}</p>
-                        <a href="${esc(safeUrl(c.link))}" target="_blank" rel="noopener noreferrer" class="btn-card">مشاهدة</a>
-                    </div>
-                `).join('');
+                grid.innerHTML = homeCourses.map(buildCourseCardHTML).join('');
             }
         } catch(e) {}
     }
@@ -204,13 +212,7 @@ async function renderCourses() {
         const snap = await db.collection('courses').where('showInHome', '==', true).get();
         const homeCourses = snap.docs.map(d => ({ id: d.id, ...d.data() }));
         localStorage.setItem('cache_courses', JSON.stringify(homeCourses));
-        grid.innerHTML = homeCourses.length ? homeCourses.map((c, i) => `
-            <div class="card animate-scale" style="animation-delay:${i*0.1}s;">
-                <h4>${esc(c.title)}</h4>
-                <p><strong>الصف:</strong> ${esc(c.grade)}</p>
-                <a href="${esc(safeUrl(c.link))}" target="_blank" rel="noopener noreferrer" class="btn-card">مشاهدة</a>
-            </div>
-        `).join('') : '<p style="color:#888;">لا توجد محاضرات عامة حالياً.</p>';
+        grid.innerHTML = homeCourses.length ? homeCourses.map(buildCourseCardHTML).join('') : '<p style="color:#888;">لا توجد محاضرات عامة حالياً.</p>';
     } catch(e) {
         console.error('renderCourses:', e);
         if (!cached) grid.innerHTML = '<p style="color:#888;">لا توجد محاضرات عامة حالياً.</p>';
@@ -737,60 +739,112 @@ function getEmbedUrl(url) {
     return { embed: '', type: '' };
 }
 
+let videoPseudoFullscreen = false;
+
+function isVideoModalOpen() {
+    const m = document.getElementById('videoModal');
+    return !!m && m.style.display === 'flex';
+}
+
 function openVideoModal(link, title) {
     const result = getEmbedUrl(link);
-    if (!result.embed) { alert('رابط الفيديو غير صالح.'); return; }
+    if (!result.embed) { alert('رابط الفيديو غير صالح.'); return false; }
 
-    const iframe = document.getElementById('videoIframe');
-    iframe.src = result.embed;
-
+    const modal = document.getElementById('videoModal');
+    const content = document.getElementById('videoModalContent');
     const wrapper = document.getElementById('videoIframeWrapper');
-    wrapper.classList.remove('is-youtube');
-    if (result.type === 'youtube') wrapper.classList.add('is-youtube');
+    const icon = document.getElementById('orientationIcon');
 
-    document.getElementById('videoModal').style.display = 'flex';
+    // رجوع للوضع العرضي الافتراضي في كل مرة
+    wrapper.classList.remove('is-portrait');
+    content.classList.remove('is-portrait', 'is-pseudo-fullscreen');
+    videoPseudoFullscreen = false;
+    if (icon) icon.textContent = '🖥️';
+
+    const titleEl = document.getElementById('videoModalTitle');
+    if (titleEl) titleEl.textContent = title || 'فيديو';
+
+    document.getElementById('videoIframe').src = result.embed;
+    modal.style.display = 'flex';
+    document.body.classList.add('video-open');
+    return true;
 }
 
 function closeVideoModal() {
-    if (document.fullscreenElement) {
-        document.exitFullscreen().catch(() => {});
+    const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+    if (fsEl) {
+        try {
+            const p = (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+            if (p && p.catch) p.catch(() => {});
+        } catch (e) {}
     }
-    document.getElementById('videoIframe').src = '';
+    try { if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); } catch (e) {}
+
+    const content = document.getElementById('videoModalContent');
+    if (content) content.classList.remove('is-pseudo-fullscreen');
+    videoPseudoFullscreen = false;
+
+    document.getElementById('videoIframe').src = 'about:blank';
     document.getElementById('videoModal').style.display = 'none';
+    document.body.classList.remove('video-open');
 }
 
 function toggleVideoFullscreen() {
-    const modalContent = document.getElementById('videoModalContent');
-    if (!modalContent) return;
+    const content = document.getElementById('videoModalContent');
+    if (!content) return;
 
-    if (!document.fullscreenElement) {
-        if (modalContent.requestFullscreen) {
-            modalContent.requestFullscreen();
-        } else if (modalContent.webkitRequestFullscreen) {
-            modalContent.webkitRequestFullscreen();
-        } else if (modalContent.msRequestFullscreen) {
-            modalContent.msRequestFullscreen();
+    const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+
+    // خروج
+    if (fsEl || videoPseudoFullscreen) {
+        if (fsEl) {
+            try {
+                const p = (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+                if (p && p.catch) p.catch(() => {});
+            } catch (e) {}
+        }
+        content.classList.remove('is-pseudo-fullscreen');
+        videoPseudoFullscreen = false;
+        try { if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); } catch (e) {}
+        return;
+    }
+
+    // دخول: Fullscreen API لو متاح، وإلا بديل CSS (iOS Safari)
+    const req = content.requestFullscreen || content.webkitRequestFullscreen;
+    if (req) {
+        let p;
+        try { p = req.call(content); } catch (e) { p = Promise.reject(e); }
+        const onOk = () => {
+            try {
+                if (screen.orientation && screen.orientation.lock) {
+                    screen.orientation.lock('landscape').catch(() => {});
+                }
+            } catch (e) {}
+        };
+        if (p && p.then) {
+            p.then(onOk).catch(() => {
+                content.classList.add('is-pseudo-fullscreen');
+                videoPseudoFullscreen = true;
+            });
+        } else {
+            onOk();
         }
     } else {
-        if (document.exitFullscreen) {
-            document.exitFullscreen();
-        }
+        content.classList.add('is-pseudo-fullscreen');
+        videoPseudoFullscreen = true;
     }
 }
 
 function toggleVideoOrientation() {
     const wrapper = document.getElementById('videoIframeWrapper');
+    const content = document.getElementById('videoModalContent');
     const icon = document.getElementById('orientationIcon');
-    
-    if (wrapper && icon) {
-        wrapper.classList.toggle('is-portrait');
-        
-        if (wrapper.classList.contains('is-portrait')) {
-            icon.textContent = '📱';
-        } else {
-            icon.textContent = '🖥️';
-        }
-    }
+    if (!wrapper || !content) return;
+
+    const portrait = !wrapper.classList.contains('is-portrait');
+    wrapper.classList.toggle('is-portrait', portrait);
+    content.classList.toggle('is-portrait', portrait);
+    if (icon) icon.textContent = portrait ? '📱' : '🖥️';
 }
 
 // --- الاختبارات ---
@@ -1078,6 +1132,8 @@ async function logout() {
     if (currentAttemptUnsub) { try { currentAttemptUnsub(); } catch(e) {} currentAttemptUnsub = null; }
     try { await auth.signOut(); } catch(e) { console.error(e); }
     currentUser = null;
+    examInProgress = false;
+    closeVideoModal();
     document.getElementById('navButtons').style.display = 'flex';
     document.getElementById('navUser').style.display = 'none';
     document.getElementById('studentDashboard').classList.remove('active');
@@ -1119,24 +1175,29 @@ function handleActionClick(e) {
         case 'back-to-dashboard': e.preventDefault(); backToDashboard(); break;
         case 'start-exam': e.preventDefault(); startExam(el.dataset.examId); break;
 
-        case 'open-video':
+        case 'open-video': {
             e.preventDefault();
-            openVideoModal(el.dataset.link, el.dataset.title);
-            if (el.dataset.bundleId && el.dataset.itemIndex !== undefined && el.dataset.itemIndex !== '') {
+            const opened = openVideoModal(el.dataset.link, el.dataset.title);
+            if (opened && el.dataset.bundleId && el.dataset.itemIndex !== undefined && el.dataset.itemIndex !== '') {
                 const bundleId = el.dataset.bundleId;
                 const itemIdx = parseInt(el.dataset.itemIndex, 10);
                 markVideoAsWatched(bundleId, itemIdx).then(() => {
-                    if (currentBundle && currentBundle.id === bundleId) {
-                        const newProgress = calculateBundleProgress(currentBundle, currentUser);
-                        const fill = document.getElementById('detailProgressFill');
-                        const text = document.getElementById('detailProgressText');
-                        if (fill) fill.style.width = newProgress + '%';
-                        if (text) text.textContent = newProgress + '%';
-                        setTimeout(() => openBundle(bundleId), 300);
+                    if (!currentBundle || currentBundle.id !== bundleId || !currentUser) return;
+                    const newProgress = calculateBundleProgress(currentBundle, currentUser);
+                    const fill = document.getElementById('detailProgressFill');
+                    const text = document.getElementById('detailProgressText');
+                    if (fill) fill.style.width = newProgress + '%';
+                    if (text) text.textContent = newProgress + '%';
+                    // تحديث الزر والأيقونة مكانهم بدون إعادة رسم الصفحة
+                    if (el.isConnected) {
+                        el.textContent = 'شوهد ✓';
+                        const titleSpan = el.parentElement && el.parentElement.querySelector('.unit-item-title');
+                        if (titleSpan) titleSpan.textContent = titleSpan.textContent.replace('🎬', '✅');
                     }
                 });
             }
             break;
+        }
 
         case 'show-attempt': e.preventDefault(); showAttemptResult(el.dataset.attemptId); break;
         case 'prev-question': e.preventDefault(); prevQuestion(); break;
@@ -1159,6 +1220,26 @@ function attachStaticListeners() {
 
     const regIsOutside = document.getElementById('regIsOutside');
     if (regIsOutside) regIsOutside.addEventListener('change', toggleCenterField);
+
+    const videoModal = document.getElementById('videoModal');
+    if (videoModal) {
+        videoModal.addEventListener('click', (e) => {
+            if (e.target === videoModal) closeVideoModal();
+        });
+    }
+    document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape' || !isVideoModalOpen()) return;
+        if (videoPseudoFullscreen) { toggleVideoFullscreen(); return; }
+        if (document.fullscreenElement || document.webkitFullscreenElement) return; // المتصفح بيخرج من الفل سكرين لوحده
+        closeVideoModal();
+    });
+    const onFsChange = () => {
+        if (!(document.fullscreenElement || document.webkitFullscreenElement)) {
+            try { if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); } catch (err) {}
+        }
+    };
+    document.addEventListener('fullscreenchange', onFsChange);
+    document.addEventListener('webkitfullscreenchange', onFsChange);
 
     const legalModal = document.getElementById('legalModal');
     if (legalModal) {
