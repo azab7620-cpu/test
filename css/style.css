@@ -2814,3 +2814,17 @@ body.dark-mode .back-home { color: var(--gold-soft); }
 .vc-btn, .vc-btn * { user-select: none; -webkit-user-select: none; }
 .vc-btn span { line-height: 1; pointer-events: none; }
 .video-actions-area { flex-wrap: nowrap; direction: ltr; }
+
+/* مشغلات جوجل/يوتيوب بتكسر واجهتها (الأزرار بتطلع برة الشاشة) لما الإطار يبقى صغير.
+   الحل: نرسم الإطار أكبر ونصغره بالـ scale عشان الواجهة تتعرض كاملة. */
+@media (max-width: 700px), (max-height: 500px) and (orientation: landscape) {
+    .video-modal-content:not(.is-portrait) #videoIframe {
+        inset: auto;
+        top: 0;
+        left: 0;
+        width: 142.86%;
+        height: 142.86%;
+        transform: scale(0.7);
+        transform-origin: 0 0;
+    }
+}
