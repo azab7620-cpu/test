@@ -2798,3 +2798,19 @@ body.dark-mode .back-home { color: var(--gold-soft); }
     transition: transform 0.2s, box-shadow 0.2s;
 }
 .btn-start-exam:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(184, 147, 90, 0.4); }
+
+/* إخفاء زر "فتح في نافذة جديدة" بتاع جوجل درايف + منع اختيار النص في الأزرار */
+.drive-popout-blocker { display: none; }
+.video-iframe-wrapper.is-drive .drive-popout-blocker {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 70px;
+    height: 60px;
+    background: #000;
+    z-index: 5;
+}
+.vc-btn, .vc-btn * { user-select: none; -webkit-user-select: none; }
+.vc-btn span { line-height: 1; pointer-events: none; }
+.video-actions-area { flex-wrap: nowrap; direction: ltr; }
