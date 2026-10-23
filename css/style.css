@@ -2610,7 +2610,6 @@ body.dark-mode .confirm-btn-ok {
     .auth-page-section { padding: 20px 10px; }
     .auth-card-modern { padding: 25px 15px; }
 
-    /* Mobile Video Modal */
     .video-modal { padding: 0; background: #000; }
     .video-modal-content {
         width: 100vw;
