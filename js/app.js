@@ -761,6 +761,8 @@ function openVideoModal(link, title) {
     videoPseudoFullscreen = false;
     if (icon) icon.textContent = '🖥️';
 
+    wrapper.classList.toggle('is-drive', result.type === 'drive');
+
     const titleEl = document.getElementById('videoModalTitle');
     if (titleEl) titleEl.textContent = title || 'فيديو';
 
