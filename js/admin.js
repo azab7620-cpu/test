@@ -466,27 +466,21 @@ async function deleteStudent(id) {
     try {
         const userRef = db.collection('users').doc(id);
 
-        // 1. حذف محاولات الاختبارات (examAttempts)
+        // 1+2. حذف محاولات الاختبارات + الـ subcollections على دفعات (حد Firestore 500 عملية)
         const attemptsSnap = await db.collection('examAttempts').where('studentId', '==', id).get();
-        if (!attemptsSnap.empty) {
-            let batch = db.batch();
-            let count = 0;
-            attemptsSnap.forEach(doc => {
-                batch.delete(doc.ref);
-                count++;
-                if (count === 400) { batch.commit(); batch = db.batch(); count = 0; }
-            });
-            if (count > 0) await batch.commit();
-        }
-
-        // 2. حذف الـ Subcollections (completedExams, watchedVideos)
         const completedSnap = await userRef.collection('completedExams').get();
         const watchedSnap = await userRef.collection('watchedVideos').get();
 
-        let batch2 = db.batch();
-        completedSnap.forEach(doc => batch2.delete(doc.ref));
-        watchedSnap.forEach(doc => batch2.delete(doc.ref));
-        await batch2.commit();
+        const refs = [
+            ...attemptsSnap.docs.map(d => d.ref),
+            ...completedSnap.docs.map(d => d.ref),
+            ...watchedSnap.docs.map(d => d.ref)
+        ];
+        for (let i = 0; i < refs.length; i += 400) {
+            const batch = db.batch();
+            refs.slice(i, i + 400).forEach(r => batch.delete(r));
+            await batch.commit();
+        }
 
         // 3. حذف المستخدم نفسه
         await userRef.delete();
